@@ -1,0 +1,25 @@
+{
+    "name": "liquirice/qelastic",
+    "description": "A Laravel Service Provider push user behavior log to Aws sqs then insert into elasticsearch",
+    "authors": [
+        {
+            "name": "liquirice",
+            "email": "liquirice@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "~4|~5",
+        "elasticsearch/elasticsearch": "~2.0",
+        "phpunit/phpunit": "~4.0"
+    },
+    "require-dev":{
+    },
+    "autoload": {
+        "psr-4": {
+            "Liquirice\\Qelastic\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
