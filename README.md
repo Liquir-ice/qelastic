@@ -1,19 +1,19 @@
-ELasticlog Insert
+#Qelastic
+---
 
-=====
+[![Latest Stable Version](https://img.shields.io/badge/laravel-5.1-green.svg)]() [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)]()
 
-[![Latest Stable Version](http://img.shields.io/packagist/v/jenssegers/agent.svg)](https://packagist.org/packages/jenssegers/agent) [![Total Downloads](http://img.shields.io/packagist/dm/jenssegers/agent.svg)](https://packagist.org/packages/jenssegers/agent) [![Build Status](http://img.shields.io/travis/jenssegers/agent.svg)](https://travis-ci.org/jenssegers/agent) [![Coverage Status](http://img.shields.io/coveralls/jenssegers/agent.svg)](https://coveralls.io/r/jenssegers/agent)
 
-A PHP desktop/mobile user agent parser with support for Laravel, based on [Mobile Detect](https://github.com/serbanghita/Mobile-Detect) with desktop support and additional functionality.
 
 <p align="center">
-<img src="http://jenssegers.be/uploads/images/agent.png?v4" height="275">
+<img src="https://www.elastic.co/static/img/logo-elastic.png" height="275">
 </p>
 
-目前還欠缺test case
-1. 測試進來的資料是否是array
-2. 測試不預期的資料寫進來
-3. 檢查是否 push 到 aws queue
+A Laravel Service Provider push user behavior log or any log to [Aws sqs](https://aws.amazon.com/sqs/).
+Using `php artisan queue:listen` to digest the queue and insert data into [elasticsearch](https://www.elastic.co/).
+
+
+
 
 Installation
 ------------
@@ -21,7 +21,17 @@ Installation
 Install using composer:
 
 ```bash
-composer require liquirice/elasticlog
+$ composer require liquirice/elasticlog
+$ composer install
+```
+
+Install manually in `composer.json`:
+```php
+"require": {
+    ...
+    "liquirice/qelastic": "~1.0.0"
+    ...
+},
 ```
 
 Laravel (optional)
@@ -30,36 +40,59 @@ Laravel (optional)
 Add the service provider in `app/config/app.php`:
 
 ```php
-'Jenssegers\Agent\AgentServiceProvider',
+'providers' => array(
+    ...
+    Liquirice\Qelastic\QelasticServiceProvider::class,
+    ...
+)
 ```
 
-We have already added the Agent alias for you:
+We have already added the Qelastic alias for you:
 
 ```php
-'Agent' => 'Jenssegers\Agent\Facades\Agent',
+'aliases' => array(
+    ...
+    'Qelastic' => 'Liquirice\Qelastic\Facades\Qelastic',
+    ...
+)
 ```
+
+Environment setting
+------------------
+Add the elasticsearch hostname and queue path in `.env`:
+
+```php
+...
+ELASTICSEARCH_HOST=127.0.0.1:9200
+QUEUE_PATH=App\Jobs\Track\UserBehavior
+...
+```
+
 
 Basic Usage
 -----------
 
-Start by creating an `Agent` instance (or use the `Agent` Facade if you are using Laravel):
+Start by creating an `Qelastic` instance (or use the `Qelastic` Facade if you are using Laravel):
+
 
 ```php
-use Jenssegers\Agent\Agent;
-
-$agent = new Agent();
-```
-
-```
-Elasticlog::pushToQueue(array(
+Qelastic::pushToQueue(array(
     'user_id' => '1',
     'action' => 'click',
     'object' => 'event',
     'object_id' => '50786',
-    'param' => '',
+    'param' => '{
+        "user_name": "admin",
+        "email" : "admin@example.com"
+    }'
 ))
 ```
 
-## License
+> **Note:** Test case not yet finish
+> 1. Check input data is array or not.
+> 2. Test unexpected data insert.
+> 3. Check data whether push to queue or not.
 
-Laravel User Agent is licensed under [The MIT License (MIT)](LICENSE).
+
+## License
+Qelastic is licensed under [The MIT License (MIT)](LICENSE).
